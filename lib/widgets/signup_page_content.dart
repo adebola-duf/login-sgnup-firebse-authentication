@@ -5,13 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/constants/constants.dart';
 import 'package:myapp/pages/login_signup_pages/login_signup_page.dart';
 
-class LoginPageContent extends StatelessWidget {
-  const LoginPageContent({super.key});
+class SignupPageContent extends StatelessWidget {
+  const SignupPageContent({super.key});
 
-  _goToSignUpPage(BuildContext context) {
+  _goToLoginPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const LoginSignupPage(purpose: Purpose.forSignup),
+        builder: (context) => const LoginSignupPage(purpose: Purpose.forLogin),
       ),
     );
   }
@@ -41,7 +41,7 @@ class LoginPageContent extends StatelessWidget {
                 ),
                 const Gap(10),
                 Text(
-                  'We are glad to see you back with us.',
+                  'We are glad you\'re here',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
@@ -107,7 +107,7 @@ class LoginPageContent extends StatelessWidget {
                         textStyle: const TextStyle(fontSize: 16)),
                     children: const <TextSpan>[
                       TextSpan(
-                        text: 'Log In ',
+                        text: 'Sign Up ',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -145,7 +145,7 @@ class LoginPageContent extends StatelessWidget {
                                   textStyle: const TextStyle(fontSize: 12)),
                               children: const <TextSpan>[
                                 TextSpan(
-                                  text: 'Log In with',
+                                  text: 'Sign Up with',
                                 ),
                                 TextSpan(
                                   text: ' Google',
@@ -188,7 +188,7 @@ class LoginPageContent extends StatelessWidget {
                                   textStyle: const TextStyle(fontSize: 12)),
                               children: const <TextSpan>[
                                 TextSpan(
-                                  text: 'Log In with',
+                                  text: 'Sign Up with',
                                 ),
                                 TextSpan(
                                   text: ' Microsoft',
@@ -208,23 +208,9 @@ class LoginPageContent extends StatelessWidget {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => _goToSignUpPage(context),
+                    onTap: () => _goToLoginPage(context),
                     child: const Text(
-                      'Don\'t have an account? Sign up',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const Gap(14),
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: const Text(
-                      'Forgot Password?',
+                      'Already have an account? Login',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,

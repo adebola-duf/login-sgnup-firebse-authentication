@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/constants.dart';
 import 'package:myapp/widgets/login_page_content.dart';
+import 'package:myapp/widgets/signup_page_content.dart';
 
-class LoginPageDesktop extends StatelessWidget {
-  const LoginPageDesktop({super.key});
+class LoginSignupPageDesktop extends StatelessWidget {
+  const LoginSignupPageDesktop({
+    super.key,
+    required this.purpose,
+  });
+
+  final Purpose purpose;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
-          const Expanded(child: LoginPageContent()),
+          Expanded(
+            child: purpose == Purpose.forLogin
+                ? const LoginPageContent()
+                : const SignupPageContent(),
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10, right: 30.0),

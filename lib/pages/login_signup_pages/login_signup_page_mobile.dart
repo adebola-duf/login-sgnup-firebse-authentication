@@ -1,10 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/constants.dart';
 import 'package:myapp/widgets/login_page_content.dart';
+import 'package:myapp/widgets/signup_page_content.dart';
 
-class LoginPageMobile extends StatelessWidget {
-  const LoginPageMobile({super.key});
+class LoginSignupPageMobile extends StatelessWidget {
+  const LoginSignupPageMobile({
+    super.key,
+    required this.purpose,
+  });
+
+  final Purpose purpose;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,9 @@ class LoginPageMobile extends StatelessWidget {
               ),
             ),
           ),
-          const LoginPageContent(),
+          purpose == Purpose.forLogin
+              ? const LoginPageContent()
+              : const SignupPageContent(),
         ],
       ),
     );

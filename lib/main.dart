@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/pages/login_page_desktop.dart';
-import 'package:myapp/pages/login_page_mobile.dart';
+import 'package:myapp/constants/constants.dart';
+import 'package:myapp/pages/login_signup_pages/login_signup_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final totalWidth = MediaQuery.sizeOf(context).width;
-    print(totalWidth);
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home:
-          totalWidth < 980 ? const LoginPageMobile() : const LoginPageDesktop(),
+      home: LoginSignupPage(purpose: Purpose.forLogin),
     );
   }
 }
