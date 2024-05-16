@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:login_signup_firebse_auth/constants/constants.dart';
-import 'package:login_signup_firebse_auth/widgets/login_page_content.dart';
-import 'package:login_signup_firebse_auth/widgets/signup_page_content.dart';
+import 'package:login_signup_firebse_auth/widgets/login_signup_page_content.dart';
 
 class LoginSignupPageMobile extends StatelessWidget {
   const LoginSignupPageMobile({
@@ -39,9 +38,7 @@ class LoginSignupPageMobile extends StatelessWidget {
               ),
             ),
           ),
-          purpose == Purpose.forLogin
-              ? const LoginPageContent()
-              : const SignupPageContent(),
+          LoginSignupPageContent(purpose: purpose),
         ],
       ),
     );

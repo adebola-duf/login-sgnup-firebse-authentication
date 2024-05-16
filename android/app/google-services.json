@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "251676418330",
+    "project_id": "boch-phishing-7d864",
+    "storage_bucket": "boch-phishing-7d864.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251676418330:android:2b009cef63431948948ca3",
+        "android_client_info": {
+          "package_name": "com.example.auth_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRjsN-0LxubOKqom3WOHEDWravi1NB9k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251676418330:android:4bb2182f58928bb2948ca3",
+        "android_client_info": {
+          "package_name": "com.example.login_signup_firebse_auth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRjsN-0LxubOKqom3WOHEDWravi1NB9k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251676418330:android:9af8797c3d8663a7948ca3",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRjsN-0LxubOKqom3WOHEDWravi1NB9k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

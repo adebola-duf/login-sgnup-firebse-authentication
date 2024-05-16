@@ -1,20 +1,43 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:login_signup_firebse_auth/constants/constants.dart';
 import 'package:login_signup_firebse_auth/pages/login_signup_page.dart';
 
-class SignupPageContent extends StatefulWidget {
-  const SignupPageContent({super.key});
+class LoginSignupPageContent extends StatefulWidget {
+  const LoginSignupPageContent({
+    super.key,
+    required this.purpose,
+  });
+
+  final Purpose purpose;
 
   @override
-  State<SignupPageContent> createState() => _SignupPageContentState();
+  State<LoginSignupPageContent> createState() => _LoginSignupPageContentState();
 }
 
-class _SignupPageContentState extends State<SignupPageContent> {
+class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
+  void _showFlushBar({
+    required String message,
+    required Color color,
+  }) {
+    Flushbar().dismiss();
+    Flushbar(
+      message: message,
+      duration: const Duration(seconds: 5),
+      flushbarPosition: FlushbarPosition.TOP,
+      backgroundColor: color,
+      flushbarStyle: FlushbarStyle.FLOATING,
+      borderRadius: BorderRadius.circular(13),
+    ).show(context);
+  }
+
+  bool _isAuthenticating = false;
   _goToLoginPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -23,50 +46,87 @@ class _SignupPageContentState extends State<SignupPageContent> {
     );
   }
 
+  _goToSignUpPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LoginSignupPage(purpose: Purpose.forSignup),
+      ),
+    );
+  }
+
+  void _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    setState(() {
+      _isAuthenticating = true;
+    });
+
+    _formKey.currentState!.save();
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _enteredEmail!, password: _enteredPassword!);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        _showFlushBar(
+            message: 'No user found for that email', color: Colors.red);
+      } else if (e.code == 'invalid-credential') {
+        _showFlushBar(message: 'Wrong username or password', color: Colors.red);
+      }
+    } catch (e) {
+      _showFlushBar(message: e.toString(), color: Colors.red);
+    }
+    setState(() {
+      _isAuthenticating = false;
+    });
+  }
+
   String? _enteredEmail;
   String? _enteredPassword;
   final _formKey = GlobalKey<FormState>();
 
   void _signUp() async {
-    print('giannis');
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    setState(() {
+      _isAuthenticating = true;
+    });
 
     _formKey.currentState!.save();
 
     try {
-      // ignore: unused_local_variable
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _enteredEmail!,
         password: _enteredPassword!,
       );
+      if (context.mounted) {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const LoginSignupPage(
+              purpose: Purpose.forLogin,
+            ),
+          ),
+        );
+      }
+      _showFlushBar(
+          message: 'Account created successfully', color: Colors.green);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        _showFlushBar(
+            message: 'The password provided is too weak', color: Colors.red);
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        _showFlushBar(
+            message: 'An account already exists for that email',
+            color: Colors.red);
       }
     } catch (e) {
-      print(e);
+      _showFlushBar(message: e.toString(), color: Colors.red);
     }
-
-    Future.delayed(const Duration(seconds: 5)).then(
-      (_) => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const LoginSignupPage(
-            purpose: Purpose.forLogin,
-          ),
-        ),
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Account created successfully.'),
-      ),
-    );
+    setState(() {
+      _isAuthenticating = false;
+    });
   }
 
   @override
@@ -118,6 +178,7 @@ class _SignupPageContentState extends State<SignupPageContent> {
                               return null;
                             },
                             onSaved: (newValue) => _enteredEmail = newValue,
+                            cursorColor: Colors.black,
                             decoration: InputDecoration(
                               hintText: 'Email',
                               hintStyle: GoogleFonts.poppins(
@@ -132,23 +193,14 @@ class _SignupPageContentState extends State<SignupPageContent> {
                         TextFieldContainer(
                           child: TextFormField(
                             validator: (enteredPassword) {
-                              final RegExp hasUppercase = RegExp(r'[A-Z]');
-                              final RegExp hasLowercase = RegExp(r'[a-z]');
-                              final RegExp hasNumber = RegExp(r'[0-9]');
-                              final RegExp hasSpecialChars =
-                                  RegExp('[!@#\$%^&*()-_=+[]{};\':",./<>?]');
-
                               if (enteredPassword == null ||
-                                  enteredPassword.length < 8 ||
-                                  !hasUppercase.hasMatch(enteredPassword) ||
-                                  !hasLowercase.hasMatch(enteredPassword) ||
-                                  !hasNumber.hasMatch(enteredPassword) ||
-                                  !hasSpecialChars.hasMatch(enteredPassword)) {
-                                return 'Password must be at least 8 characters and contain a mix of uppercase letters, lowercase letters, numbers, and special characters.';
+                                  enteredPassword.length < 8) {
+                                return 'Password must be at least 8 characters.';
                               }
                               return null;
                             },
                             onSaved: (newValue) => _enteredPassword = newValue,
+                            cursorColor: Colors.black,
                             decoration: InputDecoration(
                               hintText: 'Password',
                               hintStyle: GoogleFonts.poppins(
@@ -172,16 +224,30 @@ class _SignupPageContentState extends State<SignupPageContent> {
                               backgroundColor:
                                   const Color.fromARGB(255, 28, 28, 28),
                             ),
-                            onPressed: () => _signUp(),
-                            child: Text(
-                              'NEXT',
-                              style: GoogleFonts.poppins(
-                                textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                            onPressed: () => _isAuthenticating
+                                ? null
+                                : widget.purpose == Purpose.forSignup
+                                    ? _signUp()
+                                    : _login(),
+                            child: !_isAuthenticating
+                                ? Text(
+                                    'NEXT',
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                : LoadingAnimationWidget.discreteCircle(
+                                    color: const Color.fromARGB(
+                                        255, 201, 255, 203),
+                                    secondRingColor: const Color.fromARGB(
+                                        255, 114, 171, 115),
+                                    thirdRingColor:
+                                        const Color.fromARGB(255, 20, 133, 24),
+                                    size: 30,
+                                  ),
                           ),
                         ),
                       ],
@@ -191,14 +257,16 @@ class _SignupPageContentState extends State<SignupPageContent> {
                   text: TextSpan(
                     style: GoogleFonts.poppins(
                         textStyle: const TextStyle(fontSize: 16)),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
-                        text: 'Sign Up ',
-                        style: TextStyle(
+                        text: widget.purpose == Purpose.forSignup
+                            ? 'Sign Up '
+                            : 'Login ',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      TextSpan(
+                      const TextSpan(
                         text: 'with others',
                       ),
                     ],
@@ -229,11 +297,13 @@ class _SignupPageContentState extends State<SignupPageContent> {
                             text: TextSpan(
                               style: GoogleFonts.poppins(
                                   textStyle: const TextStyle(fontSize: 12)),
-                              children: const <TextSpan>[
+                              children: <TextSpan>[
                                 TextSpan(
-                                  text: 'Sign Up with',
+                                  text: widget.purpose == Purpose.forSignup
+                                      ? 'Sign Up with'
+                                      : 'Login with',
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: ' Google',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -272,11 +342,13 @@ class _SignupPageContentState extends State<SignupPageContent> {
                             text: TextSpan(
                               style: GoogleFonts.poppins(
                                   textStyle: const TextStyle(fontSize: 12)),
-                              children: const <TextSpan>[
+                              children: <TextSpan>[
                                 TextSpan(
-                                  text: 'Sign Up with',
+                                  text: widget.purpose == Purpose.forSignup
+                                      ? 'Sign Up with'
+                                      : 'Login with',
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: ' Microsoft',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -294,16 +366,35 @@ class _SignupPageContentState extends State<SignupPageContent> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => _goToLoginPage(context),
-                    child: const Text(
-                      'Already have an account? Login',
-                      style: TextStyle(
+                    onTap: () => widget.purpose == Purpose.forSignup
+                        ? _goToLoginPage(context)
+                        : _goToSignUpPage(context),
+                    child: Text(
+                      widget.purpose == Purpose.forSignup
+                          ? 'Already have an account? Login'
+                          : 'Don\'t have an account? Sign up',
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
+                const Gap(20),
+                if (widget.purpose == Purpose.forLogin)
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
