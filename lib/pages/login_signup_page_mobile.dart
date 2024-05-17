@@ -23,7 +23,7 @@ class LoginSignupPageMobile extends StatelessWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                    'assets/images/fidelity-lady.png',
+                    'assets/images/adventurer-girl.png',
                   ),
                   fit: BoxFit.cover,
                 ),

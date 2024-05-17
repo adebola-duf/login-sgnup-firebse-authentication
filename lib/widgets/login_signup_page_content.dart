@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:login_signup_firebse_auth/constants/constants.dart';
 import 'package:login_signup_firebse_auth/pages/login_signup_page.dart';
+import 'package:login_signup_firebse_auth/widgets/message_dialog.dart';
 
 class LoginSignupPageContent extends StatefulWidget {
   const LoginSignupPageContent({
@@ -21,23 +21,14 @@ class LoginSignupPageContent extends StatefulWidget {
   State<LoginSignupPageContent> createState() => _LoginSignupPageContentState();
 }
 
-class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
-  void _showFlushBar({
-    required String message,
-    required Color color,
-  }) {
-    Flushbar().dismiss();
-    Flushbar(
-      message: message,
-      duration: const Duration(seconds: 5),
-      flushbarPosition: FlushbarPosition.TOP,
-      backgroundColor: color,
-      flushbarStyle: FlushbarStyle.FLOATING,
-      borderRadius: BorderRadius.circular(13),
-    ).show(context);
-  }
-
+class _LoginSignupPageContentState extends State<LoginSignupPageContent>
+    with SingleTickerProviderStateMixin {
+  String? _enteredEmail;
+  String? _enteredPassword;
+  final _formKey = GlobalKey<FormState>();
+  bool _obscureText = true;
   bool _isAuthenticating = false;
+
   _goToLoginPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -68,22 +59,30 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
           email: _enteredEmail!, password: _enteredPassword!);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        _showFlushBar(
-            message: 'No user found for that email', color: Colors.red);
+        showAdaptiveDialog(
+          context: context,
+          builder: (context) =>
+              const ErrorDialog(message: 'No user found for that email'),
+        );
       } else if (e.code == 'invalid-credential') {
-        _showFlushBar(message: 'Wrong username or password', color: Colors.red);
+        showAdaptiveDialog(
+          context: context,
+          builder: (context) =>
+              const ErrorDialog(message: 'Wrong username or password'),
+        );
       }
     } catch (e) {
-      _showFlushBar(message: e.toString(), color: Colors.red);
+      showAdaptiveDialog(
+        context: context,
+        builder: (context) => ErrorDialog(
+          message: e.toString(),
+        ),
+      );
     }
     setState(() {
       _isAuthenticating = false;
     });
   }
-
-  String? _enteredEmail;
-  String? _enteredPassword;
-  final _formKey = GlobalKey<FormState>();
 
   void _signUp() async {
     if (!_formKey.currentState!.validate()) {
@@ -101,28 +100,30 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
         password: _enteredPassword!,
       );
       if (context.mounted) {
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const LoginSignupPage(
-              purpose: Purpose.forLogin,
-            ),
-          ),
+        showAdaptiveDialog(
+          context: context,
+          builder: (context) => const MessageDialog(),
         );
       }
-      _showFlushBar(
-          message: 'Account created successfully', color: Colors.green);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        _showFlushBar(
-            message: 'The password provided is too weak', color: Colors.red);
+        showAdaptiveDialog(
+            context: context,
+            builder: (context) => const ErrorDialog(
+                  message: 'The password provided is too weak',
+                ));
       } else if (e.code == 'email-already-in-use') {
-        _showFlushBar(
-            message: 'An account already exists for that email',
-            color: Colors.red);
+        showAdaptiveDialog(
+          context: context,
+          builder: (context) => const ErrorDialog(
+              message: 'An account already exists for that email'),
+        );
       }
     } catch (e) {
-      _showFlushBar(message: e.toString(), color: Colors.red);
+      showAdaptiveDialog(
+        context: context,
+        builder: (context) => ErrorDialog(message: e.toString()),
+      );
     }
     setState(() {
       _isAuthenticating = false;
@@ -199,6 +200,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
                               }
                               return null;
                             },
+                            obscureText: _obscureText,
                             onSaved: (newValue) => _enteredPassword = newValue,
                             cursorColor: Colors.black,
                             decoration: InputDecoration(
@@ -207,6 +209,14 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
                                 textStyle: const TextStyle(fontSize: 12),
                               ),
                               prefixIcon: const Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                icon: Icon(_obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () => setState(() {
+                                  _obscureText = !_obscureText;
+                                }),
+                              ),
                               border: InputBorder.none,
                             ),
                           ),
@@ -334,7 +344,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SvgPicture.asset(
-                            'assets/icons/microsoft-logo.svg',
+                            'assets/icons/github-logo.svg',
                             height: 30,
                           ),
                           const Gap(6),
@@ -349,7 +359,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
                                       : 'Login with',
                                 ),
                                 const TextSpan(
-                                  text: ' Microsoft',
+                                  text: ' Github',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -385,7 +395,13 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent> {
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        showAdaptiveDialog(
+                          context: context,
+                          builder: (context) =>
+                              const ErrorDialog(message: 'Bolexyro'),
+                        );
+                      },
                       child: const Text(
                         'Forgot password?',
                         style: TextStyle(

@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login_signup_firebse_auth/constants/constants.dart';
 import 'package:login_signup_firebse_auth/firebase_options.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:login_signup_firebse_auth/pages/login_signup_page.dart';
 
 void main() async {
@@ -18,13 +17,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  // Future<void> _launchUrl() async {
-  //   if (!await launchUrl(Uri(path: 'https://www.google.com/'),
-  //       webOnlyWindowName: '_self')) {
-  //     print('could not launch url');
-  //     throw Exception('Could not launch url');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -27,7 +27,7 @@ class LoginSignupPageDesktop extends StatelessWidget {
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Image.asset(
-                  'assets/images/fidelity-lady.png',
+                  'assets/images/adventurer-girl.png',
                   fit: BoxFit.cover,
                 ),
               ),
