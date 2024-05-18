@@ -67,8 +67,9 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
       } else if (e.code == 'invalid-credential') {
         showAdaptiveDialog(
           context: context,
-          builder: (context) =>
-              const ErrorDialog(message: 'Wrong username or password'),
+          builder: (context) => const ErrorDialog(
+              message:
+                  'Wrong username or password. Are you sure you have an account?'),
         );
       }
     } catch (e) {
@@ -128,6 +129,29 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
     setState(() {
       _isAuthenticating = false;
     });
+  }
+
+  Future<void> _signInWithGoogle() async {
+    GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+    googleProvider
+        .addScope('https://www.googleapis.com/auth/contacts.readonly');
+    googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+
+    await FirebaseAuth.instance.signInWithPopup(googleProvider);
+  }
+
+  Future<UserCredential?> _signInWithGitHub() async {
+    GithubAuthProvider githubProvider = GithubAuthProvider();
+    try{
+
+    final userCred = await FirebaseAuth.instance.signInWithPopup(githubProvider);
+    return userCred;
+    }
+    catch(e){
+      print(e);
+    }
+    return null;
   }
 
   @override
@@ -224,7 +248,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                         const Gap(24),
                         SizedBox(
                           width: double.infinity,
-                          height: 52,
+                          height: 60,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -286,7 +310,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: _signInWithGoogle,
                     child: Container(
                       height: 52,
                       width: double.infinity,
@@ -331,7 +355,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: _signInWithGitHub,
                     child: Container(
                       height: 52,
                       width: double.infinity,
@@ -399,7 +423,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                         showAdaptiveDialog(
                           context: context,
                           builder: (context) =>
-                              const ErrorDialog(message: 'Bolexyro'),
+                              const ErrorDialog(message: 'Not working yet'),
                         );
                       },
                       child: const Text(

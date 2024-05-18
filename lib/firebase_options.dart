@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAQukXLSX6z_oCy9IJqZOztWpQ12a-CaDk',
-    appId: '1:251676418330:web:c7b975b4dbe6f7be948ca3',
-    messagingSenderId: '251676418330',
-    projectId: 'boch-phishing-7d864',
-    authDomain: 'boch-phishing-7d864.firebaseapp.com',
-    storageBucket: 'boch-phishing-7d864.appspot.com',
+    apiKey: 'AIzaSyDVE4IykhMQFQienE7a_qwzn8kOyaY3oUw',
+    appId: '1:75772375058:web:5c0127aa81d56e055fa8cb',
+    messagingSenderId: '75772375058',
+    projectId: 'login-signup-providers',
+    authDomain: 'login-signup-providers.firebaseapp.com',
+    storageBucket: 'login-signup-providers.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBRjsN-0LxubOKqom3WOHEDWravi1NB9k4',
-    appId: '1:251676418330:android:4bb2182f58928bb2948ca3',
+    appId: '1:251676418330:android:08aa3ce0d7ee399a948ca3',
     messagingSenderId: '251676418330',
     projectId: 'boch-phishing-7d864',
     storageBucket: 'boch-phishing-7d864.appspot.com',
   );
+
 }

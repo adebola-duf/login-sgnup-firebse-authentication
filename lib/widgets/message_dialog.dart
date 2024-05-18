@@ -112,7 +112,7 @@ class ErrorDialog extends StatelessWidget {
               ),
             ),
             Container(
-              height: 100,
+              // height: 100,
               width: double.infinity,
               color: Colors.white,
               child: Column(
@@ -124,8 +124,10 @@ class ErrorDialog extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const Gap(5),
                   Text(
                     message,
+                    textAlign: TextAlign.center,
                   ),
                   const Gap(15),
                   MouseRegion(
@@ -147,6 +149,7 @@ class ErrorDialog extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const Gap(15),
                 ],
               ),
             )
