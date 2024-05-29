@@ -195,6 +195,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                       children: [
                         TextFieldContainer(
                           child: TextFormField(
+                            keyboardType: TextInputType.emailAddress,
                             validator: (String? enteredEmail) {
                               if (enteredEmail == null ||
                                   !EmailValidator.validate(enteredEmail)) {
@@ -217,6 +218,7 @@ class _LoginSignupPageContentState extends State<LoginSignupPageContent>
                         const Gap(24),
                         TextFieldContainer(
                           child: TextFormField(
+                            keyboardType: TextInput,
                             validator: (enteredPassword) {
                               if (enteredPassword == null ||
                                   enteredPassword.length < 8) {
